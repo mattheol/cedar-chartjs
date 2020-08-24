@@ -1,4 +1,4 @@
-import { cedarAmCharts } from '.././/../chart-js';
+import { cedarChartjs } from '.././/../cedar-chartjs';
 import { IDataset, ISeries } from './common';
 import { getChartData } from './dataset';
 import { queryDatasets } from './query/query';
@@ -277,7 +277,7 @@ export class Chart {
    * Re-draw the chart based on the current data and definition
    */
   public render() {
-    cedarAmCharts(this._container, this.definition(), this.data());
+    cedarChartjs(this._container, this.definition(), this.data());
     return this;
   }
 

@@ -172,8 +172,39 @@ const barGrouped = {
   ],
 };
 
+const pie = {
+  type: 'pie',
+  datasets: [
+    {
+      url:
+        'https://services.arcgis.com/uDTUpUPbk8X8mXwl/arcgis/rest/services/Public_Schools_in_Onondaga_County/FeatureServer/0',
+      query: {
+        orderByFields: 'Number_of_SUM DESC',
+        groupByFieldsForStatistics: 'Type',
+        outStatistics: [
+          {
+            statisticType: 'sum',
+            onStatisticField: 'Number_of',
+            outStatisticFieldName: 'Number_of_SUM',
+          },
+        ],
+      },
+    },
+  ],
+  series: [
+    {
+      category: { field: 'Type', label: 'Type' },
+      value: {
+        field: 'Number_of_SUM',
+        label: 'Number of Students',
+      },
+    },
+  ],
+};
+
 export const charts = [
   { label: 'Line', chart: line },
   { label: 'Bar', chart: bar },
   { label: 'Bar grouped', chart: barGrouped },
+  { label: 'Pie', chart: pie },
 ];

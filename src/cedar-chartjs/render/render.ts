@@ -1,4 +1,3 @@
-/* globals AmCharts:false */
 import merge from 'deepmerge';
 import specs from '../specs/specs';
 const chartjs = require('chart.js');
@@ -60,21 +59,186 @@ function getPieBalloonText(definition: any) {
   return `<div>${categoryLabel}[[title]]</div><div>${valueLabel}[[percents]]% ([[value]])</div>`;
 }
 
-function mapDataToChartJs(graphs: any, dataProvider: any, categoryField: any) {
+function mapDataToChartJs(
+  type: any,
+  graphs: any,
+  dataProvider: any,
+  categoryField: any
+) {
   const labels = dataProvider.map((record) => record[categoryField]);
   let datasets = [],
     data = [];
-  graphs.forEach((graph) => {
+  const colors = [
+    'AntiqueWhite',
+    'AliceBlue',
+    'Aqua',
+    'Aquamarine',
+    'Azure',
+    'Beige',
+    'Bisque',
+    'Black',
+    'BlanchedAlmond',
+    'Blue',
+    'BlueViolet',
+    'Brown',
+    'BurlyWood',
+    'CadetBlue',
+    'Chartreuse',
+    'Chocolate',
+    'Coral',
+    'CornflowerBlue',
+    'Cornsilk',
+    'Crimson',
+    'Cyan',
+    'DarkBlue',
+    'DarkCyan',
+    'DarkGoldenRod',
+    'DarkGray',
+    'DarkGrey',
+    'DarkGreen',
+    'DarkKhaki',
+    'DarkMagenta',
+    'DarkOliveGreen',
+    'DarkOrange',
+    'DarkOrchid',
+    'DarkRed',
+    'DarkSalmon',
+    'DarkSeaGreen',
+    'DarkSlateBlue',
+    'DarkSlateGray',
+    'DarkSlateGrey',
+    'DarkTurquoise',
+    'DarkViolet',
+    'DeepPink',
+    'DeepSkyBlue',
+    'DimGray',
+    'DimGrey',
+    'DodgerBlue',
+    'FireBrick',
+    'FloralWhite',
+    'ForestGreen',
+    'Fuchsia',
+    'Gainsboro',
+    'GhostWhite',
+    'Gold',
+    'GoldenRod',
+    'Gray',
+    'Grey',
+    'Green',
+    'GreenYellow',
+    'HoneyDew',
+    'HotPink',
+    'IndianRed',
+    'Indigo',
+    'Ivory',
+    'Khaki',
+    'Lavender',
+    'LavenderBlush',
+    'LawnGreen',
+    'LemonChiffon',
+    'LightBlue',
+    'LightCoral',
+    'LightCyan',
+    'LightGoldenRodYellow',
+    'LightGray',
+    'LightGrey',
+    'LightGreen',
+    'LightPink',
+    'LightSalmon',
+    'LightSeaGreen',
+    'LightSkyBlue',
+    'LightSlateGray',
+    'LightSlateGrey',
+    'LightSteelBlue',
+    'LightYellow',
+    'Lime',
+    'LimeGreen',
+    'Linen',
+    'Magenta',
+    'Maroon',
+    'MediumAquaMarine',
+    'MediumBlue',
+    'MediumOrchid',
+    'MediumPurple',
+    'MediumSeaGreen',
+    'MediumSlateBlue',
+    'MediumSpringGreen',
+    'MediumTurquoise',
+    'MediumVioletRed',
+    'MidnightBlue',
+    'MintCream',
+    'MistyRose',
+    'Moccasin',
+    'NavajoWhite',
+    'Navy',
+    'OldLace',
+    'Olive',
+    'OliveDrab',
+    'Orange',
+    'OrangeRed',
+    'Orchid',
+    'PaleGoldenRod',
+    'PaleGreen',
+    'PaleTurquoise',
+    'PaleVioletRed',
+    'PapayaWhip',
+    'PeachPuff',
+    'Peru',
+    'Pink',
+    'Plum',
+    'PowderBlue',
+    'Purple',
+    'RebeccaPurple',
+    'Red',
+    'RosyBrown',
+    'RoyalBlue',
+    'SaddleBrown',
+    'Salmon',
+    'SandyBrown',
+    'SeaGreen',
+    'SeaShell',
+    'Sienna',
+    'Silver',
+    'SkyBlue',
+    'SlateBlue',
+    'SlateGray',
+    'SlateGrey',
+    'Snow',
+    'SpringGreen',
+    'SteelBlue',
+    'Tan',
+    'Teal',
+    'Thistle',
+    'Tomato',
+    'Turquoise',
+    'Violet',
+    'Wheat',
+    'White',
+    'WhiteSmoke',
+    'Yellow',
+    'YellowGreen',
+  ];
+  graphs.forEach((graph, index) => {
     data = dataProvider.map((record) => record[graph.valueField]);
-    datasets.push({ label: graph.title, data });
+    const backgroundColor =
+      type === 'pie' ? colors.slice(0, data.length - 1) : colors[index];
+    datasets.push({ label: graph.title, data, backgroundColor });
   });
   return { labels, datasets };
 }
 
 function mapSpecToChartJs(specification: any) {
   const { type, graphs, dataProvider, categoryField } = specification;
-  const data = mapDataToChartJs(graphs, dataProvider, categoryField);
-  const options = { responsive: true, maintainAspectRatio: false };
+  const data = mapDataToChartJs(type, graphs, dataProvider, categoryField);
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      colorschemes: {
+        scheme: 'brewer.Paired12',
+      },
+    },
+  };
   const specMapped = { type, data, options };
   console.log('specMapped', specMapped);
   return specMapped;
