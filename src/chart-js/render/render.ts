@@ -5,8 +5,9 @@ const chartjs = require('chart.js');
 
 // TODO: how to have access to IDefinition
 export function renderChart(elementId: string, definition: any, data?: any) {
+  let chart;
   if (definition.type === 'custom') {
-    const chart = makeChart(elementId, definition.specification);
+    chart = makeChart(elementId, definition.specification);
     return chart;
   }
   // Clone/copy spec and data
@@ -34,14 +35,14 @@ export function renderChart(elementId: string, definition: any, data?: any) {
     // see: https://github.com/KyleAMathews/deepmerge#arraymerge
     spec = merge(spec, definition.overrides, { clone: true });
   }
-  console.log(spec);
-  const chart = makeChart(elementId, spec);
+  console.log('definition', definition);
+  console.log('spec', spec);
+  chart = makeChart(elementId, spec);
   // If it is a pie chart
   if (definition.type === 'pie') {
     // Set pie chart balloonText
     chart.balloonText = getPieBalloonText(definition);
   }
-  console.log(definition);
   //console.log(chart);
   return chart;
 }
@@ -59,85 +60,31 @@ function getPieBalloonText(definition: any) {
   return `<div>${categoryLabel}[[title]]</div><div>${valueLabel}[[percents]]% ([[value]])</div>`;
 }
 
+function mapDataToChartJs(graphs: any, dataProvider: any, categoryField: any) {
+  const labels = dataProvider.map((record) => record[categoryField]);
+  let datasets = [],
+    data = [];
+  graphs.forEach((graph) => {
+    data = dataProvider.map((record) => record[graph.valueField]);
+    datasets.push({ label: graph.title, data });
+  });
+  return { labels, datasets };
+}
+
 function mapSpecToChartJs(specification: any) {
-  const type = specification.type === 'serial' ? 'bar' : specification.type;
-  const labels = specification.dataProvider.map(
-    (record) => record[specification.categoryField]
-  );
-  const label = specification.graphs[0].title;
-  const data = specification.dataProvider.map(
-    (record) => record[specification.graphs[0].valueField]
-  );
-  const datasets = [{ label, data }];
-  //ustawienie responsywności wykresu
+  const { type, graphs, dataProvider, categoryField } = specification;
+  const data = mapDataToChartJs(graphs, dataProvider, categoryField);
   const options = { responsive: true, maintainAspectRatio: false };
-  const specMapped = { type, data: { labels, datasets }, options };
-  console.log(specMapped);
+  const specMapped = { type, data, options };
+  console.log('specMapped', specMapped);
   return specMapped;
 }
 
 function makeChart(elementId: any, specification: any): any {
   const spec = mapSpecToChartJs(specification);
-  // const spec = {
-  //   type: 'bar', // bar, horizontalBar, pie, line, doughnut, radar, polarArea
-  //   data: {
-  //     labels: [
-  //       'Boston',
-  //       'Worcester',
-  //       'Springfield',
-  //       'Lowell',
-  //       'Cambridge',
-  //       'New Bedford',
-  //     ],
-  //     datasets: [
-  //       {
-  //         label: 'Population',
-  //         data: [617594, 181045, 153060, 106519, 105162, 95072],
-  //         //backgroundColor:'green',
-  //         backgroundColor: [
-  //           'rgba(255, 99, 132, 0.6)',
-  //           'rgba(54, 162, 235, 0.6)',
-  //           'rgba(255, 206, 86, 0.6)',
-  //           'rgba(75, 192, 192, 0.6)',
-  //           'rgba(153, 102, 255, 0.6)',
-  //           'rgba(255, 159, 64, 0.6)',
-  //           'rgba(255, 99, 132, 0.6)',
-  //         ],
-  //         borderWidth: 1,
-  //         borderColor: '#777',
-  //         hoverBorderWidth: 3,
-  //         hoverBorderColor: '#000',
-  //       },
-  //     ],
-  //   },
-  //   options: {
-  //     title: {
-  //       display: true,
-  //       text: 'Largest Cities In Massachusetts',
-  //       fontSize: 25,
-  //     },
-  //     legend: {
-  //       display: true,
-  //       position: 'right',
-  //       labels: {
-  //         fontColor: '#000',
-  //       },
-  //     },
-  //     layout: {
-  //       padding: {
-  //         left: 50,
-  //         right: 0,
-  //         bottom: 0,
-  //         top: 0,
-  //       },
-  //     },
-  //     tooltips: {
-  //       enabled: true,
-  //     },
-  //   },
-  // };
-  let massPopChart = new chartjs.Chart(elementId, spec);
-  return massPopChart;
+  const chart = new chartjs.Chart(elementId, spec);
+  console.log(chart);
+  return chart;
 }
 
 export function fillInSpec(spec: any, definition: any) {

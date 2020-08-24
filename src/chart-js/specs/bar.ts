@@ -1,5 +1,5 @@
 export const bar = {
-  type: 'serial',
+  type: 'bar',
   rotate: false,
   theme: 'calcite',
   chartCursor: {

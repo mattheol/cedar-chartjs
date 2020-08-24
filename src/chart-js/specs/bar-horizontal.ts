@@ -1,23 +1,27 @@
 export const barHorizontal = {
-  type: 'serial',
+  type: 'bar',
   theme: 'calcite',
   rotate: true,
   chartCursor: {
     leaveCursor: true,
     valueLineEnabled: true,
-    categoryBalloonEnabled: false
+    categoryBalloonEnabled: false,
   },
-  graphs: [{
-    type: 'column',
-  }],
+  graphs: [
+    {
+      type: 'column',
+    },
+  ],
   legend: {},
-  valueAxes: [ {
-    gridAlpha: 0.2,
-    stackType: 'regular'
-  } ],
+  valueAxes: [
+    {
+      gridAlpha: 0.2,
+      stackType: 'regular',
+    },
+  ],
   export: {
-    enabled: true
-  }
-}
+    enabled: true,
+  },
+};
 
-export default barHorizontal
+export default barHorizontal;

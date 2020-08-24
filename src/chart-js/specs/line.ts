@@ -1,28 +1,30 @@
 const line = {
-  type: 'serial',
+  type: 'line',
   theme: 'calcite',
   chartCursor: {
     categoryBalloonEnabled: false,
-    valueLineBalloonEnabled: true
+    valueLineBalloonEnabled: true,
   },
-  graphs: [{
-    bullet: 'circle',
-    bulletAlpha: 1,
-    bulletBorderAlpha: 0.8,
-    bulletBorderThickness: 0,
-    // bulletColor: '#FFFFFF',
-    dashLengthField: 'dashLengthLine',
-    fillAlphas: 0,
-    useLineColorForBulletBorder: true
-  }],
+  graphs: [
+    {
+      bullet: 'circle',
+      bulletAlpha: 1,
+      bulletBorderAlpha: 0.8,
+      bulletBorderThickness: 0,
+      // bulletColor: '#FFFFFF',
+      dashLengthField: 'dashLengthLine',
+      fillAlphas: 0,
+      useLineColorForBulletBorder: true,
+    },
+  ],
   legend: {
     // horizontalGap: 10,
     position: 'bottom',
-    useGraphSettings: true
+    useGraphSettings: true,
   },
   export: {
-    enabled: true
-  }
-}
+    enabled: true,
+  },
+};
 
-export default line
+export default line;

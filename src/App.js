@@ -1,48 +1,42 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import './App.css';
+import { charts } from './Charts';
+import styled from 'styled-components';
 const cedar = require('./cedar/src/index');
 
+const StyledButton = styled.button`
+  font-size: 18px;
+`;
+
 const App = () => {
+  const [currentChart, setCurrentChart] = useState(charts[0]);
   useEffect(() => {
-    const definition = {
-      type: 'bar',
-      datasets: [
-        {
-          url:
-            'https://services.arcgis.com/uDTUpUPbk8X8mXwl/arcgis/rest/services/Public_Schools_in_Onondaga_County/FeatureServer/0',
-          name: 'Number_of_SUM',
-          query: {
-            orderByFields: 'Number_of_SUM DESC',
-            groupByFieldsForStatistics: 'Type',
-            outStatistics: [
-              {
-                statisticType: 'sum',
-                onStatisticField: 'Number_of',
-                outStatisticFieldName: 'Number_of_SUM',
-              },
-            ],
-          },
-        },
-      ],
-      series: [
-        {
-          category: { field: 'Type', label: 'Type' },
-          value: { field: 'Number_of_SUM', label: 'Number of Students' },
-          source: 'Number_of_SUM',
-        },
-      ],
-    };
-    const chart = document.getElementById('chart');
-    const test = chart.getContext('2d');
-    var cedarChart = new cedar.Chart(test, definition);
+    let canvas = document.getElementById('chart');
+    const parent = document.getElementById('chartContainer');
+    parent.removeChild(canvas);
+    parent.innerHTML = '<canvas id="chart"></canvas>';
+    canvas = document.getElementById('chart');
+    const context = canvas.getContext('2d');
+    var cedarChart = new cedar.Chart(context, currentChart.chart);
     cedarChart.show();
-  }, []);
+  });
 
   return (
     <>
+      {charts.map((chart, index) => (
+        <StyledButton
+          key={chart.label}
+          onClick={() => {
+            setCurrentChart((state) => charts[index]);
+          }}
+        >
+          {chart.label}
+        </StyledButton>
+      ))}
       <div
-        class='chart-container'
-        style={{ height: '300px', position: 'relative' }}
+        id='chartContainer'
+        className='chart-container'
+        style={{ height: '300px' }}
       >
         <canvas id='chart'></canvas>
       </div>
